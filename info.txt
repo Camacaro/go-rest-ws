@@ -1,0 +1,11 @@
+
+Paquetes
+$ go get github.com/golang-jwt/jwt
+
+Este paquete nos ayudara a crear un ruteador y un websocket
+$ go get github.com/gorilla/mux
+
+$ go get github.com/gorilla/websocket
+
+Variables de entorno
+$ go get github.com/joho/godotenv
