@@ -5,10 +5,18 @@ import (
 	"database/sql"
 	"go-rest-ws/models"
 	"log"
+
+	_ "github.com/lib/pq" // Es necessario para que funcione la conexion con postgres
 )
 
+/*
+	sql: NO se tuvo que descargar ya que es parte de Go
+
+	Pero hay que descargar el paquete de postgresql
+	$ go get github.com/lib/pq
+*/
 type PostgresRepository struct {
-	db *sql.DB // NO se tuvo que descargar ya que es parte de Go
+	db *sql.DB
 }
 
 func NewPostgresRepository(url string) (*PostgresRepository, error) {
@@ -25,7 +33,7 @@ func (repo *PostgresRepository) InsertUser(ctx context.Context, user *models.Use
 	return err
 }
 
-func (repo *PostgresRepository) GetUserById(ctx context.Context, id int64) (*models.User, error) {
+func (repo *PostgresRepository) GetUserById(ctx context.Context, id string) (*models.User, error) {
 	// row := repo.db.QueryRowContext(ctx, "SELECT id, email, password FROM users WHERE id = $1", id)
 	// user := &models.User{}
 	// err := row.Scan(&user.Id, &user.Email, &user.Password)

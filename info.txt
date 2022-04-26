@@ -9,3 +9,9 @@ $ go get github.com/gorilla/websocket
 
 Variables de entorno
 $ go get github.com/joho/godotenv
+
+Paquete de postgresql
+go get github.com/lib/pq
+
+Generar id's unicos
+go get github.com/segmentio/ksuid
