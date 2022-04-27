@@ -15,3 +15,9 @@ go get github.com/lib/pq
 
 Generar id's unicos
 go get github.com/segmentio/ksuid
+
+=== Docker Seccion ===
+Correr el Dockerfile dentro de database (contruir imagen)
+$ docker build . -t golang-rest-ws-db
+Levantar contenedor
+$ docker run -p 54321:5432 golang-rest-ws-db

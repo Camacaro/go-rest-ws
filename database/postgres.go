@@ -29,7 +29,7 @@ func NewPostgresRepository(url string) (*PostgresRepository, error) {
 
 // El contexto es para poder hacer un track de la app
 func (repo *PostgresRepository) InsertUser(ctx context.Context, user *models.User) error {
-	_, err := repo.db.ExecContext(ctx, "INSERT INTO users (email, password) VALUES ($1, $2)", user.Email, user.Password)
+	_, err := repo.db.ExecContext(ctx, "INSERT INTO users (id, email, password) VALUES ($1, $2, $3)", user.Email, user.Password, user.Id)
 	return err
 }
 

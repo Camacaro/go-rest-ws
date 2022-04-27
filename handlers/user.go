@@ -20,7 +20,7 @@ type SingUpResponse struct {
 	Email string `json:"email"`
 }
 
-func SignUpHander(s server.Server) http.HandlerFunc {
+func SignUpHandler(s server.Server) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var request = SingUpRequest{}
 		// Si hay problemas con la decodificación, es porque envió datos incorrectos
