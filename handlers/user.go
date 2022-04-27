@@ -20,6 +20,9 @@ type SingUpResponse struct {
 	Email string `json:"email"`
 }
 
+/*
+	TODO: Agregar validaciones de email que no se repitan
+*/
 func SignUpHandler(s server.Server) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var request = SingUpRequest{}
