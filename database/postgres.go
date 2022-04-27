@@ -29,18 +29,11 @@ func NewPostgresRepository(url string) (*PostgresRepository, error) {
 
 // El contexto es para poder hacer un track de la app
 func (repo *PostgresRepository) InsertUser(ctx context.Context, user *models.User) error {
-	_, err := repo.db.ExecContext(ctx, "INSERT INTO users (id, email, password) VALUES ($1, $2, $3)", user.Email, user.Password, user.Id)
+	_, err := repo.db.ExecContext(ctx, "INSERT INTO users (id, email, password) VALUES ($1, $2, $3)", user.Id, user.Email, user.Password)
 	return err
 }
 
 func (repo *PostgresRepository) GetUserById(ctx context.Context, id string) (*models.User, error) {
-	// row := repo.db.QueryRowContext(ctx, "SELECT id, email, password FROM users WHERE id = $1", id)
-	// user := &models.User{}
-	// err := row.Scan(&user.Id, &user.Email, &user.Password)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// return user, nil
 
 	rows, err := repo.db.QueryContext(ctx, "SELECT id, email FROM users WHERE id = $1", id)
 
@@ -71,9 +64,9 @@ func (repo *PostgresRepository) Close() error {
 }
 
 func (repo *PostgresRepository) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
-	row := repo.db.QueryRowContext(ctx, "SELECT id, email, password FROM users WHERE email = $1", email)
 	user := &models.User{}
-	err := row.Scan(&user.Id, &user.Email, &user.Password)
+	const query = "SELECT id, email, password FROM users WHERE email = $1"
+	err := repo.db.QueryRowContext(ctx, query, email).Scan(&user.Id, &user.Email, &user.Password)
 	if err != nil {
 		return nil, err
 	}

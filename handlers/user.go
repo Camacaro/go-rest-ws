@@ -5,6 +5,7 @@ import (
 	"go-rest-ws/models"
 	"go-rest-ws/repository"
 	"go-rest-ws/server"
+	"log"
 	"net/http"
 	"time"
 
@@ -83,23 +84,27 @@ func LoginHandler(s server.Server) http.HandlerFunc {
 		// Si hay problemas con la decodificación, es porque envió datos incorrectos
 		err := json.NewDecoder(r.Body).Decode(&request)
 		if err != nil {
+			log.Println(err)
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
 		user, err := repository.GetUserByEmail(r.Context(), request.Email)
 		if err != nil {
+			log.Println(err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
 		if user == nil {
+			log.Println("User not found")
 			http.Error(w, "invalid credentials", http.StatusUnauthorized)
 			return
 		}
 
 		err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(request.Password))
 		if err != nil {
+			log.Println(err)
 			http.Error(w, "invalid credentials", http.StatusUnauthorized)
 			return
 		}
@@ -114,6 +119,7 @@ func LoginHandler(s server.Server) http.HandlerFunc {
 		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 		tokenString, err := token.SignedString([]byte(s.Config().JWTSecret))
 		if err != nil {
+			log.Println(err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
