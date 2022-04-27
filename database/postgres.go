@@ -72,3 +72,8 @@ func (repo *PostgresRepository) GetUserByEmail(ctx context.Context, email string
 	}
 	return user, nil
 }
+
+func (repo *PostgresRepository) InsertPost(ctx context.Context, post *models.Post) error {
+	_, err := repo.db.ExecContext(ctx, "INSERT INTO posts (id, user_id, post_content, created_at) VALUES ($1, $2, $3, $4)", post.Id, post.UserId, post.PostContent, post.CreatedAt)
+	return err
+}

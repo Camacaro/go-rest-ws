@@ -7,3 +7,12 @@ CREATE TABLE users (
   created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
+DROP TABLE IF EXISTS posts;
+
+CREATE TABLE posts (
+  id VARCHAR(32) PRIMARY KEY,
+  user_id VARCHAR(32) NOT NULL,
+  post_content TEXT NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);

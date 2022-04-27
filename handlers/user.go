@@ -133,6 +133,7 @@ func LoginHandler(s server.Server) http.HandlerFunc {
 	}
 }
 
+// TODO: abstract this code (token) it's use in post.go
 func MeHandler(s server.Server) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		tokenString := strings.TrimSpace(r.Header.Get("Authorization"))

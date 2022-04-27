@@ -26,3 +26,7 @@ Correr el Dockerfile dentro de database (contruir imagen)
 $ docker build . -t golang-rest-ws-db
 Levantar contenedor
 $ docker run -p 54321:5432 golang-rest-ws-db
+Si hago una modificacion en el archovo up.sql, debo crear una nueva imagen
+$ docker build . -t golang-rest-ws-db
+Volver a Levantar
+$ docker run -p 54321:5432 golang-rest-ws-db
