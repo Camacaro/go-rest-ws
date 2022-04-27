@@ -54,7 +54,7 @@ func CheckAuthMiddleware(s server.Server) func(h http.Handler) http.Handler {
 				models.AppClaims{}: El como queremos tener la data al descomprimir el token
 				func: que verifica si la llave enviada es correcta
 			*/
-			data, err := jwt.ParseWithClaims(tokenString, models.AppClaims{}, func(token *jwt.Token) (interface{}, error) {
+			data, err := jwt.ParseWithClaims(tokenString, &models.AppClaims{}, func(token *jwt.Token) (interface{}, error) {
 				return []byte(s.Config().JWTSecret), nil
 			})
 

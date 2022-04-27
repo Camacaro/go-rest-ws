@@ -3,8 +3,10 @@ package main
 import (
 	"context"
 	"go-rest-ws/handlers"
+	"go-rest-ws/middlewares"
 	"go-rest-ws/server"
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/gorilla/mux"
@@ -38,7 +40,12 @@ func main() {
 }
 
 func BindRoutes(s server.Server, r *mux.Router) {
+	// Middlewares
+	// Para cada ruta que esta aqui pasara por este middleware
+	r.Use(middlewares.CheckAuthMiddleware(s))
+
 	r.HandleFunc("/", handlers.HommeHandler(s)).Methods("GET")
 	r.HandleFunc("/signup", handlers.SignUpHandler(s)).Methods("POST")
-	r.HandleFunc("/login", handlers.LoginHandler(s)).Methods("POST")
+	r.HandleFunc("/login", handlers.LoginHandler(s)).Methods(http.MethodPost)
+	r.HandleFunc("/me", handlers.MeHandler(s)).Methods(http.MethodGet)
 }
