@@ -1,5 +1,7 @@
 
 Paquetes
+
+JWT autenticacion
 $ go get github.com/golang-jwt/jwt
 
 Este paquete nos ayudara a crear un ruteador y un websocket
@@ -15,6 +17,9 @@ go get github.com/lib/pq
 
 Generar id's unicos
 go get github.com/segmentio/ksuid
+
+Crear hash password
+$ go get golang.org/x/crypto/bcrypt
 
 === Docker Seccion ===
 Correr el Dockerfile dentro de database (contruir imagen)

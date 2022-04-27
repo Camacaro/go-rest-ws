@@ -69,3 +69,13 @@ func (repo *PostgresRepository) GetUserById(ctx context.Context, id string) (*mo
 func (repo *PostgresRepository) Close() error {
 	return repo.db.Close()
 }
+
+func (repo *PostgresRepository) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
+	row := repo.db.QueryRowContext(ctx, "SELECT id, email, password FROM users WHERE email = $1", email)
+	user := &models.User{}
+	err := row.Scan(&user.Id, &user.Email, &user.Password)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
