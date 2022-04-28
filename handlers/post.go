@@ -7,6 +7,7 @@ import (
 	"go-rest-ws/server"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/golang-jwt/jwt"
@@ -184,5 +185,34 @@ func DeletePostHandler(s server.Server) http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusUnauthorized)
 			return
 		}
+	}
+}
+
+func ListPostHandler(s server.Server) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Query params
+		pageStr := r.URL.Query().Get("page")
+		var err error
+		var page = uint64(0)
+
+		if pageStr != "" {
+			page, err = strconv.ParseUint(pageStr, 10, 64)
+			if err != nil {
+				log.Println(err)
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+		}
+
+		posts, err := repository.ListPosts(r.Context(), page)
+		if err != nil {
+			log.Println(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(posts)
 	}
 }
