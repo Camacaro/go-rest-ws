@@ -1,6 +1,10 @@
 package websocket
 
-import "github.com/gorilla/websocket"
+import (
+	"fmt"
+
+	"github.com/gorilla/websocket"
+)
 
 type Client struct {
 	hub      *Hub
@@ -30,6 +34,8 @@ func (c *Client) Write() {
 				c.socket.WriteMessage(websocket.CloseMessage, []byte{})
 				return
 			}
+
+			fmt.Println("client.go: Client.Write: Enviando mensaje", string(message))
 
 			// Enviar el mensaje - Escribit el mensaje que estoy recibiendo
 			c.socket.WriteMessage(websocket.TextMessage, message)

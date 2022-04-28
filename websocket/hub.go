@@ -1,6 +1,8 @@
 package websocket
 
 import (
+	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"sync"
@@ -51,4 +53,69 @@ func (h *Hub) HandleWebScoket(w http.ResponseWriter, r *http.Request) {
 		para este websockets
 	*/
 	go client.Write()
+}
+
+// Ejecutar el hub
+func (h *Hub) Run() {
+	for {
+		select {
+		case client := <-h.register: // Un cliente se acaba de registrar
+			h.onConnect(client)
+		case client := <-h.unregister: // Un cliente se acaba de desregistrar
+			h.onDisconnect(client)
+		}
+	}
+}
+
+func (h *Hub) onConnect(client *Client) {
+	fmt.Println("hub.go: Hub.onConnect: Cliente conectado", client.socket.RemoteAddr())
+
+	h.mutex.Lock()
+	defer h.mutex.Unlock()
+
+	client.id = client.socket.RemoteAddr().String()
+	h.clients = append(h.clients, client)
+}
+
+func (h *Hub) onDisconnect(client *Client) {
+	fmt.Println("hub.go: Hub.onDisconnect: Cliente desconectado", client.socket.RemoteAddr())
+
+	// Cerrar la conexion
+	client.socket.Close()
+
+	h.mutex.Lock()
+	defer h.mutex.Unlock()
+
+	// Eliminar el cliente del array
+	// for i, c := range h.clients {
+	// 	if c.id == client.id {
+	// 		h.clients = append(h.clients[:i], h.clients[i+1:]...)
+	// 		break
+	// 	}
+	// }
+
+	i := -1
+	for j, c := range h.clients {
+		if c.id == client.id {
+			i = j
+			break
+		}
+	}
+
+	copy(h.clients[i:], h.clients[i+1:])
+	h.clients[len(h.clients)-1] = nil
+	h.clients = h.clients[:len(h.clients)-1]
+}
+
+// TRansmitir los mensajes a todos los clientes
+// ignore nos sirve para ignorar el cliente que envia el mensaje
+func (h *Hub) Broadcast(message interface{}, ignore *Client) {
+	// Serializar la data
+	data, _ := json.Marshal(message)
+
+	for _, client := range h.clients {
+		if client != ignore {
+			client.outbound <- data // Enviar el mensaje al canal
+		}
+	}
 }
