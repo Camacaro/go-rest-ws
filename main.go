@@ -5,6 +5,7 @@ import (
 	"go-rest-ws/handlers"
 	"go-rest-ws/middlewares"
 	"go-rest-ws/server"
+	"go-rest-ws/websocket"
 	"log"
 	"net/http"
 	"os"
@@ -40,6 +41,9 @@ func main() {
 }
 
 func BindRoutes(s server.Server, r *mux.Router) {
+	// Create a new Hub, websocket
+	hub := websocket.NewHub()
+
 	// Middlewares
 	// Para cada ruta que esta aqui pasara por este middleware
 	r.Use(middlewares.CheckAuthMiddleware(s))
@@ -53,4 +57,7 @@ func BindRoutes(s server.Server, r *mux.Router) {
 	r.HandleFunc("/posts/{id}", handlers.UpdatePostHandler(s)).Methods(http.MethodPut)
 	r.HandleFunc("/posts/{id}", handlers.DeletePostHandler(s)).Methods(http.MethodDelete)
 	r.HandleFunc("/posts", handlers.ListPostHandler(s)).Methods(http.MethodGet)
+
+	// Ruta qeu manejara el websocket
+	r.HandleFunc("/ws", hub.HandleWebScoket)
 }
