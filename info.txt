@@ -21,6 +21,9 @@ go get github.com/segmentio/ksuid
 Crear hash password
 $ go get golang.org/x/crypto/bcrypt
 
+Cors
+$ go get github.com/cors
+
 === Docker Seccion ===
 Correr el Dockerfile dentro de database (contruir imagen)
 $ docker build . -t golang-rest-ws-db

@@ -39,22 +39,54 @@ func main() {
 	s.Start(BindRoutes)
 }
 
+// func BindRoutes(s server.Server, r *mux.Router) {
+
+// 	api := r.PathPrefix("/api/v1").Subrouter()
+
+// 	// Create a new Hub, websocket
+// 	// hub := websocket.NewHub() -> Se crea un nuevo hub en el server.go
+
+// 	// Middlewares
+// 	// Para cada ruta que esta aqui pasara por este middleware
+// 	r.Use(middlewares.CheckAuthMiddleware(s))
+
+// 	r.HandleFunc("/", handlers.HommeHandler(s)).Methods("GET")
+// 	r.HandleFunc("/signup", handlers.SignUpHandler(s)).Methods("POST")
+// 	r.HandleFunc("/login", handlers.LoginHandler(s)).Methods(http.MethodPost)
+// 	r.HandleFunc("/me", handlers.MeHandler(s)).Methods(http.MethodGet)
+// 	r.HandleFunc("/posts", handlers.InsertPostHandler(s)).Methods(http.MethodPost)
+// 	r.HandleFunc("/posts/{id}", handlers.GetPostByIdHandler(s)).Methods(http.MethodGet)
+// 	r.HandleFunc("/posts/{id}", handlers.UpdatePostHandler(s)).Methods(http.MethodPut)
+// 	r.HandleFunc("/posts/{id}", handlers.DeletePostHandler(s)).Methods(http.MethodDelete)
+// 	r.HandleFunc("/posts", handlers.ListPostHandler(s)).Methods(http.MethodGet)
+
+// 	// Ruta qeu manejara el websocket, y activara el hub
+// 	// go hub.Run() -> Ya no se usa aqui sino en server.go
+// 	// r.HandleFunc("/ws", hub.HandleWebScoket)
+// 	r.HandleFunc("/ws", s.Hub().HandleWebScoket)
+// }
+
 func BindRoutes(s server.Server, r *mux.Router) {
+
+	// Sub rutas, para que esten protegidas por token
+	// Las que no lo tengan se puede acceder sin el token
+	api := r.PathPrefix("/api/v1").Subrouter()
+
 	// Create a new Hub, websocket
 	// hub := websocket.NewHub() -> Se crea un nuevo hub en el server.go
 
 	// Middlewares
 	// Para cada ruta que esta aqui pasara por este middleware
-	r.Use(middlewares.CheckAuthMiddleware(s))
+	api.Use(middlewares.CheckAuthMiddleware(s))
 
 	r.HandleFunc("/", handlers.HommeHandler(s)).Methods("GET")
 	r.HandleFunc("/signup", handlers.SignUpHandler(s)).Methods("POST")
 	r.HandleFunc("/login", handlers.LoginHandler(s)).Methods(http.MethodPost)
 	r.HandleFunc("/me", handlers.MeHandler(s)).Methods(http.MethodGet)
-	r.HandleFunc("/posts", handlers.InsertPostHandler(s)).Methods(http.MethodPost)
+	api.HandleFunc("/posts", handlers.InsertPostHandler(s)).Methods(http.MethodPost)
 	r.HandleFunc("/posts/{id}", handlers.GetPostByIdHandler(s)).Methods(http.MethodGet)
-	r.HandleFunc("/posts/{id}", handlers.UpdatePostHandler(s)).Methods(http.MethodPut)
-	r.HandleFunc("/posts/{id}", handlers.DeletePostHandler(s)).Methods(http.MethodDelete)
+	api.HandleFunc("/posts/{id}", handlers.UpdatePostHandler(s)).Methods(http.MethodPut)
+	api.HandleFunc("/posts/{id}", handlers.DeletePostHandler(s)).Methods(http.MethodDelete)
 	r.HandleFunc("/posts", handlers.ListPostHandler(s)).Methods(http.MethodGet)
 
 	// Ruta qeu manejara el websocket, y activara el hub
