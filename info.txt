@@ -24,6 +24,12 @@ $ go get golang.org/x/crypto/bcrypt
 Cors
 $ go get github.com/cors
 
+Si veo que en mi archivo de go.mod me dice que tengo librerias 
+indirecta, solo debo de actualizarlas con el siguiente comando
+Si las dejo indirecta, voy a tener problemas a la hora de descargarlo 
+en el contenedor
+$ go mod tidy
+
 === Docker Seccion ===
 Correr el Dockerfile dentro de database (contruir imagen)
 $ docker build . -t golang-rest-ws-db
@@ -33,3 +39,9 @@ Si hago una modificacion en el archovo up.sql, debo crear una nueva imagen
 $ docker build . -t golang-rest-ws-db
 Volver a Levantar
 $ docker run -p 54321:5432 golang-rest-ws-db
+
+Contenerdor del proyecto
+Creamos la imagen de este proyecto (revisar si exite la imagen para no volverva a crear)
+$ docker build . -t golang-rest-ws 
+Levantamos el contenedor 
+$ docker run -p 5050:5050 golang-rest-ws
